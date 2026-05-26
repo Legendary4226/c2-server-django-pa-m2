@@ -1,7 +1,5 @@
 import base64
 import os
-from datetime import datetime
-from random import randint
 from re import Match
 
 from decouple import config
@@ -40,6 +38,10 @@ class ExecService:
         if job is None:
             return
 
+        if job.started_at is None:
+            job.started_at = timezone.now()
+            job.save()
+
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
         os.makedirs("folder/path", exist_ok=True)
 
@@ -54,6 +56,9 @@ class ExecService:
         job = machine.get_current_job()
         if job is None:
             return
+
+        job.finished_at = timezone.now()
+        job.save()
 
         # TODO fusionner les fichiers
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"

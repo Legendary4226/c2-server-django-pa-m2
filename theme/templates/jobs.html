@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <!-- Table Module -->
+    <div class="bg-surface-container-lowest rounded-xl border border-surface-variant overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-low">
+            <span class="font-data-mono text-data-mono text-on-surface-variant">Jobs</span>
+        </div>
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="border-b border-surface-variant">
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">ID</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Machine</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Commande</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Créé le</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Commencé le</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Statut</th>
+            </tr>
+            </thead>
+            <tbody class="font-data-mono text-data-mono">
+            {% for job in jobs %}
+                <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+                <td class="px-6 py-5 text-on-surface">
+                    {{ job.id }}
+                </td>
+                <td class="px-6 py-5 text-primary font-bold">{{ job.infected_machine.dns_identifier }}</td>
+                <td class="px-6 py-5 text-primary font-bold">{{ job.raw_command }}</td>
+                <td class="px-6 py-5 text-on-surface">{{ job.created_at }}</td>
+                <td class="px-6 py-5 text-on-surface-variant">{{ job.started_at }}</td>
+                <td class="px-6 py-5 text-on-surface-variant">
+                    {% if job.finished_at is None %}
+                    	<span class="mdi mdi-cog mdi-spin"></span>
+                    {% else %}
+                        <span class="mdi mdi-check"></span> {{ job.finished_at }}
+                    {% endif %}
+                </td>
+                <td class="px-6 py-5 text-right">
+
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="p-4 flex justify-between items-center bg-surface-container-low border-t border-surface-variant">
+            <div class="text-on-surface-variant text-[12px] font-data-mono px-2">
+                TOTAL: {{ machines.count }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

