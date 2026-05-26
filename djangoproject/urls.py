@@ -28,9 +28,15 @@ def index(request):
         "jobsCount": Job.objects.count(),
     })
 
+def machines(request):
+    return render(request, "machines.html", {
+        "machines": InfectedMachine.objects.all(),
+    })
+
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', index, name='index'),
+    path('machines', machines, name='machines'),
 ]
 if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode

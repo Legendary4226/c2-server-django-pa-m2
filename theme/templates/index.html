@@ -1,106 +1,47 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
-    <aside class="flex flex-col h-full fixed left-0 top-0 z-40 bg-white border-r border-surface-container-high w-64">
-        <div class="p-lg flex flex-col gap-lg h-full">
-            <div class="flex flex-col gap-1">
-                <span class="text-title-md font-bold text-primary">C2 Serveur</span>
-                <span class="text-label-caps text-on-surface-variant uppercase tracking-widest">Système Actif</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+        <div class="bg-white rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col justify-between h-72">
+            <div class="flex justify-between items-start">
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-headline-lg text-on-surface">Machines contrôlées</h2>
+                </div>
+                <div class="p-3 bg-surface-container-low rounded-xl text-primary">
+                    <span class="mdi mdi-laptop text-[28px]"></span>
+                </div>
             </div>
-            <nav class="flex flex-col gap-1 mt-4">
-                <a class="bg-surface-container-low text-primary px-4 py-3 rounded-xl flex items-center gap-3 transition-all"
-                   href="#">
-                    <span class="mdi mdi-view-dashboard"></span>
-                    <span class="font-medium">Dashboard</span>
+            <div class="flex items-baseline gap-4">
+                <span class="text-[80px] font-bold leading-none text-primary">{{ machinesCount }}</span>
+            </div>
+            <div class="pt-4 border-t border-surface-container-low">
+                <a class="text-body-sm font-bold text-primary hover:text-surface-tint flex items-center gap-2 group transition-colors"
+                   href="/machines">
+                    Consulter
+                    <span class="mdi mdi-arrow-right text-[18px] group-hover:translate-x-1 transition-transform"></span>
                 </a>
-                <a class="bg-surface-container-low text-primary px-4 py-3 rounded-xl flex items-center gap-3 transition-all"
-                   href="#">
-                    <span class="mdi mdi-laptop"></span>
-                    <span class="font-medium">Machines</span>
-                </a>
-            </nav>
-{#            <div class="mt-auto flex flex-col gap-1 border-t border-surface-container-high pt-lg">#}
-{#                <a class="text-on-surface-variant hover:text-on-surface px-4 py-2 flex items-center gap-3 transition-all"#}
-{#                   href="#">#}
-{#                    <span class="material-symbols-outlined text-[20px]">list_alt</span>#}
-{#                    <span class="text-body-sm">Logs</span>#}
-{#                </a>#}
-{#                <a class="text-on-surface-variant hover:text-on-surface px-4 py-2 flex items-center gap-3 transition-all"#}
-{#                   href="#">#}
-{#                    <span class="material-symbols-outlined text-[20px]">verified_user</span>#}
-{#                    <span class="text-body-sm">Security</span>#}
-{#                </a>#}
-{#            </div>#}
+            </div>
         </div>
-    </aside>
 
-    <main class="ml-64 flex-1 flex flex-col min-h-screen">
-        <!-- Top Navigation -->
-        <header class="flex justify-between items-center w-full px-lg h-20 bg-white border-b border-surface-container-high sticky top-0 z-30">
-            <div class="flex items-center gap-lg">
-                <h1 class="text-headline-lg font-bold text-on-surface">Mission Control</h1>
-            </div>
-            <div class="flex items-center gap-sm">
-{#                <div class="flex items-center gap-1 pr-4 mr-2">#}
-{#                    <button class="p-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full">#}
-{#                        <span class="material-symbols-outlined">notifications</span>#}
-{#                    </button>#}
-{#                    <button class="p-2 text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full">#}
-{#                        <span class="material-symbols-outlined">settings</span>#}
-{#                    </button>#}
-{#                </div>#}
-{#                <div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">#}
-{#                    <img alt="User operator profile" class="w-full h-full object-cover"#}
-{#                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOpcJIh5MWPMlsmGe34i18Z-shgEbOXG-yEl8HdRmazrkXZa-aeAqaXn_IqJvdmC3MWFE0IWaj3qQADbijvBqppXoqbvjcZ1GDLpiAPTmKnVraEPfcdrO8O6cu_BHmKA8QhxGyiWQjo2N9qT5cTKdSAK7CwQjSmer6k42WW1HW4jiLJbRzsahKIqmE2M97rJhWFpZyPIadZLfwD68Veh2v7HIomBsN81J2yWoJyFLnr__Scdu1-_zmSBgwedE7H0PEuzXb9oMgWDaT"/>#}
-{#                </div>#}
-            </div>
-        </header>
-
-        <section class="p-lg max-w-7xl mx-auto w-full">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-                <div class="bg-white rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col justify-between h-72">
-                    <div class="flex justify-between items-start">
-                        <div class="flex flex-col gap-2">
-                            <h2 class="text-headline-lg text-on-surface">Machines contrôlées</h2>
-                        </div>
-                        <div class="p-3 bg-surface-container-low rounded-xl text-primary">
-                            <span class="mdi mdi-laptop text-[28px]"></span>
-                        </div>
-                    </div>
-                    <div class="flex items-baseline gap-4">
-                        <span class="text-[80px] font-bold leading-none text-primary">{{ machinesCount }}</span>
-                    </div>
-                    <div class="pt-4 border-t border-surface-container-low">
-                        <a class="text-body-sm font-bold text-primary hover:text-surface-tint flex items-center gap-2 group transition-colors"
-                           href="#">
-                            Consulter
-                            <span class="mdi mdi-arrow-right text-[18px] group-hover:translate-x-1 transition-transform"></span>
-                        </a>
-                    </div>
+        <div class="bg-white rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col justify-between h-72">
+            <div class="flex justify-between items-start">
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-headline-lg text-on-surface">Tâches en cours</h2>
                 </div>
-
-                <div class="bg-white rounded-xl p-8 border border-surface-container-high shadow-sm flex flex-col justify-between h-72">
-                    <div class="flex justify-between items-start">
-                        <div class="flex flex-col gap-2">
-                            <h2 class="text-headline-lg text-on-surface">Tâches en cours</h2>
-                        </div>
-                        <div class="p-3 bg-surface-container-low rounded-xl text-primary">
-                            <span class="mdi mdi-cog-play text-[28px]"></span>
-                        </div>
-                    </div>
-                    <div class="flex items-baseline gap-4">
-                        <span class="text-[80px] font-bold leading-none text-primary">{{ jobsCount }}</span>
-                    </div>
-                    <div class="pt-4 border-t border-surface-container-low">
-                        <a class="text-body-sm font-bold text-primary hover:text-surface-tint flex items-center gap-2 group transition-colors"
-                           href="#">
-                            Consulter
-                            <span class="mdi mdi-arrow-right text-[18px] group-hover:translate-x-1 transition-transform"></span>
-                        </a>
-                    </div>
+                <div class="p-3 bg-surface-container-low rounded-xl text-primary">
+                    <span class="mdi mdi-cog-play text-[28px]"></span>
                 </div>
             </div>
-        </section>
-    </main>
+            <div class="flex items-baseline gap-4">
+                <span class="text-[80px] font-bold leading-none text-primary">{{ jobsCount }}</span>
+            </div>
+            <div class="pt-4 border-t border-surface-container-low">
+                <a class="text-body-sm font-bold text-primary hover:text-surface-tint flex items-center gap-2 group transition-colors"
+                   href="#">
+                    Consulter
+                    <span class="mdi mdi-arrow-right text-[18px] group-hover:translate-x-1 transition-transform"></span>
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

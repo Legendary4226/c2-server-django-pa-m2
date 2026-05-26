@@ -60,12 +60,12 @@ class Command(BaseCommand):
             if not parsed:
                 continue
 
-            _, domain, _ = parsed
+            client_ip, domain, _ = parsed
             matched = self.dnsLogMatcher.match_line(domain)
             if not matched:
                 continue
 
             match_type, match = matched
-            self.exec.test(match_type, match)
+            self.exec.process(match_type, match, client_ip)
 
         self.stdout.write('End of process')

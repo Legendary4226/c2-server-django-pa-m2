@@ -8,10 +8,10 @@ class DnsMatchEnum(Enum):
 
     def get_regex(self) -> str:
         if self == DnsMatchEnum.GET_JOB:
-            return "^job.([a-z]+).tm-it.fr$"
+            return "^cmd.([a-z0-9]+).tm-it.fr$"
         elif self == DnsMatchEnum.RETURN_JOB_FRAGMENT:
-            return "^([a-z0-9]+).data.([0-9]+).job.([a-z]+).tm-it.fr$"
+            return "^([0-9]+).([A-Za-z0-9]+).cmd.([a-z0-9]+).tm-it.fr$"
         elif self == DnsMatchEnum.JOB_FINISHED:
-            return "^finished.([0-9]+).job.([a-z]+).tm-it.fr$"
+            return "^finished.cmd.([a-z0-9]+).tm-it.fr$"
 
         raise Exception("Unknown DnsMatchEnum")

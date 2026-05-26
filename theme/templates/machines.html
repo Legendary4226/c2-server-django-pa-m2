@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block body %}
+    <!-- Table Module -->
+    <div class="bg-surface-container-lowest rounded-xl border border-surface-variant overflow-hidden shadow-sm">
+        <div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-low">
+            <span class="font-data-mono text-data-mono text-on-surface-variant">Liste des machines</span>
+{#            <div class="flex gap-2">#}
+{#                <button class="p-1.5 border border-surface-variant rounded hover:bg-surface-container text-on-surface-variant transition-colors">#}
+{#                    <span class="material-symbols-outlined text-[18px]">filter_list</span>#}
+{#                </button>#}
+{#                <button class="p-1.5 border border-surface-variant rounded hover:bg-surface-container text-on-surface-variant transition-colors">#}
+{#                    <span class="material-symbols-outlined text-[18px]">download</span>#}
+{#                </button>#}
+{#            </div>#}
+        </div>
+        <table class="w-full text-left border-collapse">
+            <thead>
+            <tr class="border-b border-surface-variant">
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">ID</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">IP</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Dernière activité</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Première activité</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest text-right">Actions</th>
+            </tr>
+            </thead>
+            <tbody class="font-data-mono text-data-mono">
+            {% for machine in machines %}
+                <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+                <td class="px-6 py-5 text-primary font-bold">
+                    {% if machine.name %}
+                    	{{ machine.name }} ({{ machine.dns_identifier }})
+                    {% else %}
+                        {{ machine.dns_identifier }}
+                    {% endif %}
+                </td>
+                <td class="px-6 py-5 text-on-surface">
+                    {{ machine.ip }}
+                </td>
+                <td class="px-6 py-5 text-on-surface-variant">{{ machine.last_handshake_at }}</td>
+                <td class="px-6 py-5 text-on-surface-variant">{{ machine.created_at }}</td>
+                <td class="px-6 py-5 text-right">
+                    {% if machine.get_current_job %}
+                        <a class="text-on-surface-variant hover:text-primary transition-colors"
+                           href="#">
+                            <span class="mdi mdi-cog mdi-spin"></span>
+                        </a>
+                    {% else %}
+                        <a class="text-on-surface-variant hover:text-primary transition-colors"
+                           href="#">
+                            <span class="mdi mdi-cog-box"></span>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+{#            <!-- Row 1 -->#}
+{#            <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-092</td>#}
+{#                <td class="px-6 py-5 text-on-surface">192.168.1.45</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-primary-fixed text-[11px] text-on-primary-fixed-variant font-bold">#}
+{#                        EN LIGNE#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-27 14:22:01</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{#            <!-- Row 2 -->#}
+{#            <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-088</td>#}
+{#                <td class="px-6 py-5 text-on-surface">172.16.254.12</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-primary-fixed text-[11px] text-on-primary-fixed-variant font-bold">#}
+{#                        EN LIGNE#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-27 14:21:55</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{#            <!-- Row 3 -->#}
+{#            <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-104</td>#}
+{#                <td class="px-6 py-5 text-on-surface">10.0.0.84</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-error-container text-[11px] text-on-error-container font-bold">#}
+{#                        HORS LIGNE#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-26 23:59:12</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{#            <!-- Row 4 -->#}
+{#            <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-075</td>#}
+{#                <td class="px-6 py-5 text-on-surface">192.168.1.102</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-primary-fixed text-[11px] text-on-primary-fixed-variant font-bold">#}
+{#                        EN LIGNE#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-27 14:18:44</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{#            <!-- Row 5 -->#}
+{#            <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-112</td>#}
+{#                <td class="px-6 py-5 text-on-surface">172.16.254.18</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-primary-fixed text-[11px] text-on-primary-fixed-variant font-bold">#}
+{#                        EN LIGNE#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-27 14:15:02</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+{#            <!-- Row 6 -->#}
+{#            <tr class="hover:bg-surface-container-low transition-colors">#}
+{#                <td class="px-6 py-5 text-primary font-bold">MCH-056</td>#}
+{#                <td class="px-6 py-5 text-on-surface">192.168.2.14</td>#}
+{#                <td class="px-6 py-5">#}
+{#                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container text-[11px] text-on-surface-variant font-bold">#}
+{#                        STANDBY#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td class="px-6 py-5 text-on-surface-variant">2023-10-27 12:44:21</td>#}
+{#                <td class="px-6 py-5 text-right">#}
+{#                    <button class="text-on-surface-variant hover:text-primary transition-colors">#}
+{#                        <span class="material-symbols-outlined">terminal</span>#}
+{#                    </button>#}
+{#                </td>#}
+{#            </tr>#}
+            </tbody>
+        </table>
+        <div class="p-4 flex justify-between items-center bg-surface-container-low border-t border-surface-variant">
+            <div class="text-on-surface-variant text-[12px] font-data-mono px-2">
+                TOTAL: {{ machines.count }}
+            </div>
+{#            <div class="flex gap-1">#}
+{#                <button class="w-8 h-8 flex items-center justify-center rounded border border-surface-variant text-on-surface hover:bg-surface-container-highest transition-colors">#}
+{#                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>#}
+{#                </button>#}
+{#                <button class="w-8 h-8 flex items-center justify-center rounded border border-primary bg-primary text-on-primary font-data-mono">#}
+{#                    1#}
+{#                </button>#}
+{#                <button class="w-8 h-8 flex items-center justify-center rounded border border-surface-variant text-on-surface hover:bg-surface-container-highest transition-colors font-data-mono">#}
+{#                    2#}
+{#                </button>#}
+{#                <button class="w-8 h-8 flex items-center justify-center rounded border border-surface-variant text-on-surface hover:bg-surface-container-highest transition-colors font-data-mono">#}
+{#                    3#}
+{#                </button>#}
+{#                <button class="w-8 h-8 flex items-center justify-center rounded border border-surface-variant text-on-surface hover:bg-surface-container-highest transition-colors">#}
+{#                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>#}
+{#                </button>#}
+{#            </div>#}
+        </div>
+    </div>
+{% endblock %}
