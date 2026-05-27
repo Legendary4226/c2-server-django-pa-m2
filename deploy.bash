@@ -9,4 +9,6 @@ cd theme/static_src && npm i && cd ../..
 
 python manage.py tailwind build
 
+python manage.py migrate
+
 systemctl restart django.service
