@@ -54,18 +54,19 @@ class Command(BaseCommand):
 
         self.stdout.write('Processing ' + str(len(lines)) + ' lines...')
 
-        for longLine in lines:
-            line = longLine[63:]
+        for line in lines:
             parsed = self.dnsLogParser.parse_line(line)
             if not parsed:
                 continue
 
-            client_ip, domain, _ = parsed
+            client_ip, domain, query_type = parsed
             matched = self.dnsLogMatcher.match_line(domain)
             if not matched:
+                self.stdout.write(f'Unmatched domain "{domain}": IP {client_ip}, query type {query_type}')
                 continue
 
             match_type, match = matched
+            self.stdout.write(f'Matched {match_type.name}: IP {client_ip} and values {" ".join(match.groups())}')
             self.exec.process(match_type, match, client_ip)
 
         self.stdout.write('End of process')

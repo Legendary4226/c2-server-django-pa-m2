@@ -18,17 +18,17 @@
                 <span class="text-label-caps text-on-surface-variant uppercase tracking-widest">Système Actif</span>
             </div>
             <nav class="flex flex-col gap-1 mt-4">
-                <a class="bg-surface-container-low text-primary px-4 py-3 rounded-xl flex items-center gap-3 transition-all"
+                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path == '/' %}bg-surface-container-low text-primary{% endif %}"
                    href="/">
                     <span class="mdi mdi-view-dashboard"></span>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                <a class="bg-surface-container-low text-primary px-4 py-3 rounded-xl flex items-center gap-3 transition-all"
+                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path == '/machines' %}bg-surface-container-low text-primary{% endif %}"
                    href="/machines">
                     <span class="mdi mdi-laptop"></span>
                     <span class="font-medium">Machines</span>
                 </a>
-                <a class="bg-surface-container-low text-primary px-4 py-3 rounded-xl flex items-center gap-3 transition-all"
+                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path == '/jobs' %}bg-surface-container-low text-primary{% endif %}"
                    href="/jobs">
                     <span class="mdi mdi-cog-play"></span>
                     <span class="font-medium">Jobs</span>

