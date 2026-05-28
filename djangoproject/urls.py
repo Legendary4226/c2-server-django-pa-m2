@@ -57,7 +57,7 @@ def job_create(request: HttpRequest, machine_id: int):
     new_job.raw_command = raw_command
     new_job.save()
 
-    DnsService().set_job_txt(machine, raw_command)
+    DnsService().set_job_txt(machine, raw_command).apply()
 
     return redirect('machines')
 
