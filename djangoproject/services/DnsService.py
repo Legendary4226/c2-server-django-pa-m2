@@ -1,6 +1,5 @@
 import base64
 import os
-import sys
 from typing import Self
 
 import dns
@@ -30,4 +29,4 @@ class DnsService:
 
     def apply(self):
         response = dns.query.tcp(self.updater, "127.0.0.1")
-        print(f"DNS update response: {response}", file=sys.stderr, flush=True)
+        print(f"DNS update response: {response}", flush=True)
