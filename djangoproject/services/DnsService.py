@@ -28,5 +28,6 @@ class DnsService:
         return self
 
     def apply(self):
+        print("DNS: about to send update", flush=True)
         response = dns.query.tcp(self.updater, "127.0.0.1")
         print(f"DNS update response: {response}", flush=True)
