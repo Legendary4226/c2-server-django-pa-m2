@@ -1,4 +1,5 @@
 import base64
+import logging
 import os
 from typing import Self
 
@@ -28,4 +29,5 @@ class DnsService:
         return self
 
     def apply(self):
-        dns.query.tcp(self.updater, "127.0.0.1")
+        response = dns.query.tcp(self.updater, "127.0.0.1")
+        logging.getLogger(__name__).info(response)
