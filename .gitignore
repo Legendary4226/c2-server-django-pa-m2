@@ -4,3 +4,4 @@ db.sqlite3
 logfile.test
 logfile_pointer.test
 data/
+theme/static/css/dist/
