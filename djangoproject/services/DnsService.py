@@ -3,6 +3,7 @@ import os
 from typing import Self
 
 import dns
+import dns.query
 from dns import tsigkeyring
 from dns.update import Update
 
