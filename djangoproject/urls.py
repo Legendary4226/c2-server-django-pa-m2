@@ -61,12 +61,21 @@ def job_create(request: HttpRequest, machine_id: int):
 
     return redirect('machines')
 
+@require_POST
+def job_delete(_: HttpRequest, job_id: int):
+    machine = Job.objects.filter(id=job_id).first()
+    if machine is not None:
+        machine.delete()
+
+    return redirect('jobs')
+
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('machines', machines, name='machines'),
     path('jobs', jobs, name='jobs'),
     path('job/create/<int:machine_id>', job_create, name='job_create'),
+    path('job/delete/<int:job_id>', job_delete, name='job_delete'),
 ]
 if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode

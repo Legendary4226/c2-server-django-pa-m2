@@ -15,6 +15,7 @@
                 <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Créé le</th>
                 <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Commencé le</th>
                 <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest">Statut</th>
+                <th class="px-6 py-4 font-label-caps text-outline bg-surface-container-lowest text-right">Actions</th>
             </tr>
             </thead>
             <tbody class="font-data-mono text-data-mono">
@@ -34,8 +35,14 @@
                         <span class="mdi mdi-check"></span> {{ job.finished_at }}
                     {% endif %}
                 </td>
+                <td class="px-6 py-5"></td>
                 <td class="px-6 py-5 text-right">
-
+                    <form method="post" action="/job/delete/{{ job.id }}">
+                        {% csrf_token %}
+                        <button class="bg-gray-200 text-red-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
+                            <span class="mdi mdi-trash-can"></span>
+                        </button>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
