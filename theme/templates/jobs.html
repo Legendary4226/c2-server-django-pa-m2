@@ -16,6 +16,7 @@
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Créé</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Commencé</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Statut</th>
+                <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Chunks</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest text-right">Actions</th>
             </tr>
             </thead>
@@ -38,7 +39,7 @@
                         <span class="mdi mdi-check"></span> {{ job.finished_at }}
                     {% endif %}
                 </td>
-                <td class="px-4 py-2"></td>
+                <td class="px-4 py-2">{{ job.chunks_received_count }} reçu</td>
                 <td class="px-4 py-2 text-right">
                     <form method="post" action="/job/delete/{{ job.id }}">
                         {% csrf_token %}
