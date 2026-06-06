@@ -33,6 +33,11 @@
                     <span class="mdi mdi-cog-play"></span>
                     <span class="font-medium">Jobs</span>
                 </a>
+                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path == '/debug' %}bg-surface-container-low text-primary{% endif %}"
+                   href="/debug">
+                    <span class="mdi mdi-bug"></span>
+                    <span class="font-medium">Debug</span>
+                </a>
             </nav>
         </div>
     </aside>

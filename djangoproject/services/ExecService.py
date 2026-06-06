@@ -28,6 +28,7 @@ class ExecService:
 
         machine.last_handshake_at = timezone.now()
         machine.ip = ip
+        machine.job_ask_count += 1
         machine.save()
 
         DnsService().remove_job_txt(machine).apply()
@@ -43,7 +44,9 @@ class ExecService:
 
         if job.started_at is None:
             job.started_at = timezone.now()
-            job.save()
+
+        job.chunks_received_count += 1
+        job.save()
 
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
         os.makedirs("folder/path", exist_ok=True)

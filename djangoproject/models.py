@@ -9,6 +9,7 @@ class InfectedMachine(models.Model):
     dns_identifier = models.CharField(max_length=100, db_index=True)
     name = models.CharField(max_length=100)
     ip = models.CharField(max_length=100, null=True)
+    job_ask_count = models.IntegerField(default=0)
 
     def get_current_job(self) -> Job|None:
         return self.job_set.filter(finished_at=None).order_by('-created_at').first()
@@ -22,3 +23,4 @@ class Job(models.Model):
     raw_command = models.TextField()
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
+    chunks_received_count = models.IntegerField(default=0)

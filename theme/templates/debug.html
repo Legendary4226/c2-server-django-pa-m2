@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    {{ debug }}
+    <div class="flex flex-col gap-4">
+        <h1 class="text-3xl">Debug</h1>
+
+        <div class="flex flex-col gap-3">
+            <h2 class="text-xl">DNS pointer file</h2>
+            <code class="bg-gray-200 p-2 rounded">{{ dns_pointer }}</code>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <h2 class="text-xl">Data folder</h2>
+            <pre class="bg-gray-200 p-2 rounded"><code>{{ data_folder_tree }}</code></pre>
+        </div>
+    </div>
 {% endblock %}
