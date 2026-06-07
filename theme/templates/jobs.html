@@ -5,7 +5,7 @@
     <div class="bg-surface-container-lowest rounded-xl border border-surface-variant overflow-hidden shadow-sm">
         <div class="p-4 border-b border-surface-variant flex justify-between items-center bg-surface-container-low">
             <span class="font-data-mono text-data-mono text-on-surface-variant">Jobs</span>
-            <p class="font-bold">Filtre sur machine #{{ filter_machine_id }}</p>
+            {% if filter_machine_id is not None %}<p class="font-bold">Filtre sur machine #{{ filter_machine_id }}</p>{% endif %}
         </div>
         <table class="w-full text-left border-collapse">
             <thead>
