@@ -56,7 +56,9 @@ def show_job_extracted(request: HttpRequest, job_id: int):
     if job is None:
         return redirect('jobs')
 
-    files_tree = file_tree(job.data_folder_path())
+    files_tree = 'No folder'
+    if os.path.exists(job.data_folder_path()):
+        files_tree = file_tree(job.data_folder_path())
 
     extracted = 'No file yet'
     if os.path.isfile(job.extracted_file_path()):

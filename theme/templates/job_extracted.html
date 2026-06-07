@@ -4,16 +4,20 @@
     <div class="flex flex-col gap-4">
         <h1 class="text-3xl">Donnée extraite du job #{{ job.id }}</h1>
 
-        <p>Commande: {{ job.raw_command }}</p>
+        <div>
+            <p class="font-semibold">Commande</p>
+            <pre class="bg-gray-200 p-2 rounded"><code>{{ job.raw_command }}</code></pre>
+        </div>
         <p>Chunks reçus: {{ job.chunks_received_count }} chunks</p>
 
-        <div class="flex flex-col gap-3">
-            <p>Fichiers :</p>
+        <div>
+            <p class="font-semibold">Fichiers</p>
             <pre class="bg-gray-200 p-2 rounded"><code>{{ files_tree }}</code></pre>
         </div>
 
-        <div class="flex flex-col gap-3">
-            <p>Données :</p>
+        <div>
+            <p class="font-semibold">Données</p>
             <pre class="bg-gray-200 p-2 rounded"><code>{{ extracted }}</code></pre>
         </div>
+    </div>
 {% endblock %}
