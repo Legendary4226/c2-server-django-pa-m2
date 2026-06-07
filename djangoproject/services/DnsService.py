@@ -38,3 +38,14 @@ class DnsService:
             print(f"DNS update response: {response}", flush=True)
         except Exception as e:
             print(f"DNS update error: {e}", flush=True)
+
+    def print_zone(self) -> str:
+        try:
+            result = ''
+            xfr = dns.query.xfr("127.0.0.1", "data.tm-it.fr", keyring=self.keyring)
+            zone = dns.zone.from_xfr(xfr)
+            for name, node in sorted(zone.nodes.items()):
+                result += f"{name} {node.to_text(name)}\n"
+            return result
+        except Exception as e:
+            return f"Zone transfer error: {e}"

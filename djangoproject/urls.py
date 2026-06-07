@@ -86,9 +86,13 @@ def debug(request: HttpRequest):
     if os.path.exists(data_folder_path):
         data_folder_tree = file_tree(data_folder_path)
 
+    dns_service = DnsService()
+    dns_zone = dns_service.print_zone()
+
     return render(request, "debug.html", {
         "dns_pointer": dns_pointer,
         "data_folder_tree": data_folder_tree,
+        "dns_zone": dns_zone,
     })
 
 def file_tree(folder_path: str, prefix="") -> str:
