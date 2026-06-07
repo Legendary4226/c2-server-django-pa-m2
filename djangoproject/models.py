@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import os
+
+from decouple import config
 from django.db import models
 
 
@@ -24,6 +27,15 @@ class Job(models.Model):
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
     chunks_received_count = models.IntegerField(default=0)
+
+    def data_folder_path(self) -> str:
+        return f"{config('FOLDER_DATA')}/{self.infected_machine_id}/{self.id}"
+
+    def extracted_file_path(self) -> str:
+        return f"{self.data_folder_path()}/extracted"
+
+    def has_extracted_file(self):
+        return os.path.isfile(self.extracted_file_path())
 
 class JobEndQueue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

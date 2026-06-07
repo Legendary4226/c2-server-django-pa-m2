@@ -41,12 +41,24 @@
                 </td>
                 <td class="px-4 py-2">{{ job.chunks_received_count }} reçu</td>
                 <td class="px-4 py-2 text-right">
-                    <form method="post" action="/job/delete/{{ job.id }}">
-                        {% csrf_token %}
-                        <button class="bg-gray-200 text-red-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
-                            <span class="mdi mdi-trash-can"></span>
-                        </button>
-                    </form>
+                    <div class="flex gap-2">
+                        {% if job.has_extracted_file %}
+                            <a href="/job/show-extracted/{{ job.id }}"
+                               class="bg-gray-200 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
+                                <span class="mdi mdi-eye"></span>
+                            </a>
+                        {% else %}
+                            <button disabled class="bg-gray-200/25 py-1 px-2 rounded-xl font-medium">
+                                <span class="mdi mdi-eye"></span>
+                            </button>
+                        {% endif %}
+                        <form method="post" action="/job/delete/{{ job.id }}">
+                            {% csrf_token %}
+                            <button class="bg-gray-200 text-red-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
+                                <span class="mdi mdi-trash-can"></span>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

