@@ -4,6 +4,7 @@ Cron task
 
 ```
 * * * * * python manage.py read_dns_logs
+* * * * * python manage.py handle_finished_job
 ```
 
 Dev

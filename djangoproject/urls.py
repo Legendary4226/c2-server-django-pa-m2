@@ -68,9 +68,12 @@ def job_create(request: HttpRequest, machine_id: int):
 
 @require_POST
 def job_delete(_: HttpRequest, job_id: int):
-    machine = Job.objects.filter(id=job_id).first()
-    if machine is not None:
-        machine.delete()
+    job = Job.objects.filter(id=job_id).first()
+    if job is not None:
+        current_machine_job = job.infected_machine.get_current_job()
+        if current_machine_job is not None and current_machine_job.id == job.id:
+            DnsService().remove_job_txt(job.infected_machine)
+        job.delete()
 
     return redirect('jobs')
 

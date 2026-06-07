@@ -24,3 +24,8 @@ class Job(models.Model):
     started_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
     chunks_received_count = models.IntegerField(default=0)
+
+class JobEndQueue(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    processable_at = models.DateTimeField(null=False)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
