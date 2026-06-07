@@ -42,5 +42,6 @@ zone "data.tm-it.fr" {
     type master;
     file "/etc/bind/db.data.tm-it.fr";
     allow-update { key "c2server"; };
+    allow-transfer { key "c2server"; };
 };
 ```
