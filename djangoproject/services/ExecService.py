@@ -63,9 +63,6 @@ class ExecService:
         if job is None:
             return
 
-        job.finished_at = timezone.now()
-        job.save()
-
         JobEndQueue.objects.create(job_id=job.id, processable_at=timezone.now() + timedelta(minutes=5))
 
     def create_machine(self, machine_id: str) -> InfectedMachine:
