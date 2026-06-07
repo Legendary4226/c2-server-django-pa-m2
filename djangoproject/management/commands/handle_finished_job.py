@@ -29,13 +29,13 @@ class Command(BaseCommand):
         job.save()
 
         chunks = job.get_sorted_chunks()
-        with open(f"{data_folder}/extracted", "w") as f:
-            for chunk in chunks:
-                with open(f"{data_folder}/{chunk}", "r") as c:
-                    data = c.read().upper()
+        with open(f"{data_folder}/extracted", "w") as extracted:
+            for chunkFile in chunks:
+                with open(f"{data_folder}/{chunkFile}", "r") as chunk:
+                    data = chunk.read().upper()
                     if (len(data) % 8) > 0:
                         data += '=' * (len(data) % 8)
-                    f.write(
+                    extracted.write(
                         base64.b32decode(data).decode('UTF-8')
                     )
 
