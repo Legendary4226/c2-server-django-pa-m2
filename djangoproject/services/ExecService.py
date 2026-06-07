@@ -62,7 +62,7 @@ class ExecService:
         if job is None:
             return
 
-        JobEndQueue.objects.create(job_id=job.id, processable_at=timezone.now() + timedelta(minutes=5))
+        JobEndQueue.objects.create(job_id=job.id, processable_at=timezone.now() + timedelta(minutes=1))
 
     def create_machine(self, machine_id: str) -> InfectedMachine:
         machine = InfectedMachine(dns_identifier=machine_id)
