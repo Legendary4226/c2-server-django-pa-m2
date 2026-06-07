@@ -16,6 +16,7 @@ Including another URLconf
 """
 import os
 
+from decouple import config
 from django.conf import settings
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
@@ -75,13 +76,13 @@ def job_delete(_: HttpRequest, job_id: int):
 
 def debug(request: HttpRequest):
     dns_pointer = 'Fichier inexistant'
-    dns_pointer_path = os.environ.get('DNS_POINTER_FILE', '')
+    dns_pointer_path = config('DNS_POINTER_FILE', '')
     if os.path.isfile(dns_pointer_path):
         with open(dns_pointer_path, 'r') as f:
             dns_pointer = f.read()
 
     data_folder_tree = 'Dossier inexistant'
-    data_folder_path = os.environ.get('FOLDER_DATA', '')
+    data_folder_path = config('FOLDER_DATA', '')
     if os.path.exists(data_folder_path):
         data_folder_tree = file_tree(data_folder_path)
 

