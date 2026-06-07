@@ -34,11 +34,8 @@ class Job(models.Model):
     def extracted_file_path(self) -> str:
         return f"{self.data_folder_path()}/extracted"
 
-    def has_extracted_file(self):
-        return os.path.isfile(self.extracted_file_path())
-
     def get_sorted_chunks(self) -> list[str]:
-        if not os.path.exists(self.extracted_file_path()):
+        if not os.path.exists(self.data_folder_path()):
             return []
 
         chunks = [f for f in os.listdir(self.data_folder_path()) if f.startswith('chunk-')]

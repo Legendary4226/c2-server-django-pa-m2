@@ -1,7 +1,5 @@
 import base64
-import os
 
-from decouple import config
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -16,14 +14,10 @@ class Command(BaseCommand):
             return
 
         print(f"Processing queue element #{queue.id} Job #{queue.job_id}")
-        queue.delete()
 
         job = queue.job
         machine = queue.job.infected_machine
-        data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
-        if not os.path.exists(data_folder):
-            print('No chunks folder exists')
-            return
+        data_folder = job.data_folder_path()
 
         job.finished_at = timezone.now()
         job.save()
@@ -38,5 +32,7 @@ class Command(BaseCommand):
                     extracted.write(
                         base64.b32decode(data).decode('UTF-8')
                     )
+
+        queue.delete()
 
         print(f"End process queue #{queue.id} Job #{queue.job_id}: {len(chunks)} chunks merged in extracted")
