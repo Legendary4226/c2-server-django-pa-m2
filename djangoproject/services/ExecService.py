@@ -49,7 +49,7 @@ class ExecService:
         job.save()
 
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
-        os.makedirs("folder/path", exist_ok=True)
+        os.makedirs(data_folder, exist_ok=True)
 
         with open(f"{data_folder}/chunk-{chunk_id}", "w") as f:
             f.write(data)
@@ -68,11 +68,15 @@ class ExecService:
 
         data_folder = f"{config('FOLDER_DATA')}/{machine.id}/{job.id}"
         chunks = [f for f in os.listdir(data_folder) if f.startswith('chunk-')]
-        with open(f"{data_folder}/final-file", "w") as f:
+        chunks.sort(key=lambda x: int(x.split('-')[1]))
+        with open(f"{data_folder}/extracted", "w") as f:
             for chunk in chunks:
                 with open(f"{data_folder}/{chunk}", "r") as c:
+                    data = c.read().upper()
+                    if (len(data) % 8) > 0:
+                        data += '=' * (len(data) % 8)
                     f.write(
-                        base64.b32decode(c.read()).decode('UTF-8')
+                        base64.b32decode(data).decode('UTF-8')
                     )
 
     def create_machine(self, machine_id: str) -> InfectedMachine:

