@@ -11,6 +11,11 @@
         <p>Chunks reçus: {{ job.chunks_received_count }} chunks</p>
 
         <div>
+            <p class="font-semibold">Chunks manquants</p>
+            <pre class="bg-gray-200 p-2 rounded text-wrap"><code>{{ job.find_missing_chunks }}</code></pre>
+        </div>
+
+        <div>
             <p class="font-semibold">Fichiers</p>
             <pre class="bg-gray-200 p-2 rounded"><code>{{ files_tree }}</code></pre>
         </div>

@@ -28,8 +28,7 @@ class Command(BaseCommand):
         job.finished_at = timezone.now()
         job.save()
 
-        chunks = [f for f in os.listdir(data_folder) if f.startswith('chunk-')]
-        chunks.sort(key=lambda x: int(x.split('-')[1]))
+        chunks = job.get_sorted_chunks()
         with open(f"{data_folder}/extracted", "w") as f:
             for chunk in chunks:
                 with open(f"{data_folder}/{chunk}", "r") as c:

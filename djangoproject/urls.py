@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import os
+import re
 
 from decouple import config
 from django.conf import settings
@@ -68,7 +69,7 @@ def show_job_extracted(request: HttpRequest, job_id: int):
     return render(request, "job_extracted.html", {
         "job": job,
         "files_tree": files_tree,
-        "extracted": extracted
+        "extracted": extracted,
     })
 
 @require_POST
@@ -119,8 +120,11 @@ def debug(request: HttpRequest):
     })
 
 def file_tree(folder_path: str, prefix="") -> str:
+    def natural_sort_key(s):
+        return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', s)]
+
     result = f"{folder_path}\n"
-    entries = sorted(os.scandir(folder_path), key=lambda e: (not e.is_dir(), e.name))
+    entries = sorted(os.scandir(folder_path), key=lambda f: natural_sort_key(f.name))
     for i, entry in enumerate(entries):
         connector = "└── " if i == len(entries) - 1 else "├── "
         result += prefix + connector + entry.name + ("/" if entry.is_dir() else "") + "\n"

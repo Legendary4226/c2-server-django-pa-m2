@@ -37,6 +37,27 @@ class Job(models.Model):
     def has_extracted_file(self):
         return os.path.isfile(self.extracted_file_path())
 
+    def get_sorted_chunks(self) -> list[str]:
+        if not os.path.exists(self.extracted_file_path()):
+            return []
+
+        chunks = [f for f in os.listdir(self.data_folder_path()) if f.startswith('chunk-')]
+        chunks.sort(key=lambda x: int(x.split('-')[1]))
+        return chunks
+
+    def find_missing_chunks(self) -> str:
+        if not os.path.exists(self.extracted_file_path()):
+            return "No chunks yet"
+        chunks = [int(f.lstrip("chunk-")) for f in os.listdir(self.data_folder_path()) if f.startswith('chunk-')]
+        sorted(chunks)
+
+        missing = []
+        for i in range(chunks[0], chunks[-1] + 1):
+            if i not in set(chunks):
+                missing.append(i)
+
+        return ", ".join(str(m) for m in missing) if missing else "Aucun ne semble manquer"
+
 class JobEndQueue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     processable_at = models.DateTimeField(null=False)
