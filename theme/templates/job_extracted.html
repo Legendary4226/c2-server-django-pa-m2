@@ -9,6 +9,14 @@
             <pre class="bg-gray-200 p-2 rounded"><code>{{ job.raw_command }}</code></pre>
         </div>
         <p>Chunks reçus: {{ job.chunks_received_count }} chunks</p>
+        <p>
+            Le worker a signalé avoir terminer de rendre les chunks ?
+            {% if job.first_job_end_queue_set is not None %}
+                Oui, merge prévu le {{ job.first_job_end_queue_set.processable_at }}
+            {% else %}
+                Pas encore reçu
+            {% endif %}
+        </p>
 
         <div>
             <p class="font-semibold">Chunks manquants</p>

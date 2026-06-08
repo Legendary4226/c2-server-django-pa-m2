@@ -17,6 +17,7 @@
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Commencé</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Statut</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">Chunks</th>
+                <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest">"Finished"</th>
                 <th class="px-4 py-2 font-label-caps text-outline bg-surface-container-lowest text-right">Actions</th>
             </tr>
             </thead>
@@ -40,6 +41,13 @@
                     {% endif %}
                 </td>
                 <td class="px-4 py-2">{{ job.chunks_received_count }} reçu</td>
+                <td class="px-4 py-2">
+                    {% if job.first_job_end_queue_set is not None %}
+                    	Prévu
+                    {% else %}
+                        Non reçu
+                    {% endif %}
+                </td>
                 <td class="px-4 py-2 text-right">
                     <div class="flex gap-2">
                         <a href="/job/show-extracted/{{ job.id }}"

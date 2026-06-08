@@ -55,6 +55,9 @@ class Job(models.Model):
 
         return ", ".join(str(m) for m in missing) if missing else "Aucun ne semble manquer"
 
+    def first_job_end_queue_set(self) -> JobEndQueue|None:
+        self.jobendqueue_set.first()
+
 class JobEndQueue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     processable_at = models.DateTimeField(null=False)
