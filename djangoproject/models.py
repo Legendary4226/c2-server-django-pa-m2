@@ -61,4 +61,5 @@ class Job(models.Model):
 class JobEndQueue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     processable_at = models.DateTimeField(null=False)
+    processed = models.BooleanField(default=False)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)

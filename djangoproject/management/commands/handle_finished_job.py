@@ -8,7 +8,7 @@ from djangoproject.models import JobEndQueue
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
-        queue = JobEndQueue.objects.filter(processable_at__lt=timezone.now()).order_by('created_at').first()
+        queue = JobEndQueue.objects.filter(processable_at__lte=timezone.now(), processed=False).order_by('created_at').first()
         if not queue:
             print("No pending queue")
             return
@@ -33,6 +33,7 @@ class Command(BaseCommand):
                         base64.b32decode(data).decode('UTF-8')
                     )
 
-        queue.delete()
+        queue.processed = True
+        queue.save()
 
         print(f"End process queue #{queue.id} Job #{queue.job_id}: {len(chunks)} chunks merged in extracted")

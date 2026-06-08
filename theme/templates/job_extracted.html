@@ -10,11 +10,15 @@
         </div>
         <p>Chunks reçus: {{ job.chunks_received_count }} chunks</p>
         <p>
-            Le worker a signalé avoir terminer de rendre les chunks ?
+            Etat de la fusion des chunks:
             {% if job.first_job_end_queue_set is not None %}
-                Oui, merge prévu le {{ job.first_job_end_queue_set.processable_at }}
+                {% if not job.first_job_end_queue_set.processed %}
+                    Oui, merge prévu le {{ job.first_job_end_queue_set.processable_at }} <span class="mdi mdi-timer-sand mdi-spin"></span>
+                {% else %}
+                    Terminé <span class="mdi mdi-check"></span>
+                {% endif %}
             {% else %}
-                Pas encore reçu
+                En attente <span class="mdi mdi-timer-sand"></span>
             {% endif %}
         </p>
 
