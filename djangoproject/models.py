@@ -68,8 +68,9 @@ class Job(models.Model):
     def delete(self, *args, **kwargs):
         shutil.rmtree(self.data_folder_path(), ignore_errors=True)
 
-        from djangoproject.services.DnsService import DnsService
-        DnsService().remove_job_txt(self.infected_machine)
+        if self.finished_at is None:
+            from djangoproject.services.DnsService import DnsService
+            DnsService().remove_job_txt(self.infected_machine).apply()
 
         super().delete(*args, **kwargs)
 
