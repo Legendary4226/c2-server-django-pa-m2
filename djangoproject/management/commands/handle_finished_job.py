@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     with open(f"{data_folder}/{chunkFile}", "r") as chunk:
                         data = chunk.read().upper()
                         padding = 8 - len(data) % 8
-                        if padding > 0:
+                        if len(data) % 8 != 0:
                             data += '=' * padding
                         extracted.write(
                             base64.b32decode(data).decode('UTF-8')
