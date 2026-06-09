@@ -34,6 +34,7 @@ def index(request: HttpRequest):
     return render(request, "index.html", {
         "machinesCount": InfectedMachine.objects.count(),
         "jobsCount": Job.objects.count(),
+        "jobsExecuting": Job.objects.filter(finished_at=None).count(),
     })
 
 def machines(request: HttpRequest):
