@@ -23,7 +23,7 @@ class Command(BaseCommand):
             job.save()
 
             chunks = job.get_sorted_chunks()
-            with open(f"{data_folder}/extracted", "w") as extracted:
+            with open(f"{data_folder}/extracted", "wb") as extracted:
                 for chunkFile in chunks:
                     with open(f"{data_folder}/{chunkFile}", "r") as chunk:
                         data = chunk.read().upper()
@@ -31,7 +31,7 @@ class Command(BaseCommand):
                         if len(data) % 8 != 0:
                             data += '=' * padding
                         extracted.write(
-                            base64.b32decode(data).decode('UTF-8')
+                            base64.b32decode(data)
                         )
 
             print(f"End process queue #{queue.id} Job #{queue.job_id}: {len(chunks)} chunks merged in extracted")

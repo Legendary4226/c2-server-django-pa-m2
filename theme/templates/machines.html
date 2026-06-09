@@ -52,6 +52,13 @@
                            href="/jobs?machine_id={{ machine.id }}">
                             <span class="mdi mdi-eye"></span> Tâches
                         </a>
+
+                        <form method="post" action="/machine/delete/{{ machine.id }}">
+                            {% csrf_token %}
+                            <button class="bg-gray-200 text-red-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
+                                <span class="mdi mdi-trash-can"></span>
+                            </button>
+                        </form>
                     </div>
                 </td>
             </tr>

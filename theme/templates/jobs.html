@@ -55,6 +55,14 @@
                            class="bg-gray-200 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
                             <span class="mdi mdi-eye"></span>
                         </a>
+                        {% if job.finished_at is None %}
+                            <form method="post" action="/job/force-finish/{{ job.id }}">
+                                {% csrf_token %}
+                                <button class="bg-gray-200 text-orange-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
+                                    <span class="mdi mdi-bottle-tonic-skull"></span>
+                                </button>
+                            </form>
+                        {% endif %}
                         <form method="post" action="/job/delete/{{ job.id }}">
                             {% csrf_token %}
                             <button class="bg-gray-200 text-red-600 py-1 px-2 rounded-xl font-medium hover:bg-primary-container transition-all cursor-pointer">
