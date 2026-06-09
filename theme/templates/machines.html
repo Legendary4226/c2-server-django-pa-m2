@@ -29,8 +29,8 @@
                 <td class="px-4 py-2 text-on-surface">
                     {{ machine.ip }}
                 </td>
-                <td class="px-4 py-2 text-on-surface-variant">{{ machine.last_handshake_at }}</td>
-                <td class="px-4 py-2 text-on-surface-variant">{{ machine.created_at }}</td>
+                <td class="px-4 py-2 text-on-surface-variant">{{ machine.last_handshake_at|localtime }}</td>
+                <td class="px-4 py-2 text-on-surface-variant">{{ machine.created_at|localtime }}</td>
                 <td class="px-4 py-2 text-on-surface-variant">{{ machine.job_ask_count }}</td>
                 <td class="px-4 py-2 text-on-surface-variant">{{ machine.finished_jobs_count }}</td>
                 <td class="px-4 py-2 text-right">

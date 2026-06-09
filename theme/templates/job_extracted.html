@@ -13,7 +13,7 @@
             Etat de la fusion des chunks:
             {% if job.first_job_end_queue_set is not None %}
                 {% if not job.first_job_end_queue_set.processed %}
-                    Oui, merge prévu le {{ job.first_job_end_queue_set.processable_at }} <span class="mdi mdi-timer-sand mdi-spin"></span>
+                    Oui, merge prévu le {{ job.first_job_end_queue_set.processable_at|localtime }} <span class="mdi mdi-timer-sand mdi-spin"></span>
                 {% else %}
                     Terminé <span class="mdi mdi-check"></span>
                 {% endif %}
