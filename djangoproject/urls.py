@@ -64,6 +64,7 @@ def show_job_extracted(request: HttpRequest, job_id: int):
         files_tree = file_tree(job.data_folder_path())
 
     extracted = 'No file yet'
+    file_info = file_mime = None
     if os.path.isfile(job.extracted_file_path()):
         import subprocess
         with open(job.extracted_file_path(), 'rb') as f:
@@ -75,6 +76,8 @@ def show_job_extracted(request: HttpRequest, job_id: int):
         "job": job,
         "files_tree": files_tree,
         "extracted": extracted,
+        "file_info": file_info,
+        "file_mime": file_mime,
     })
 
 @require_POST

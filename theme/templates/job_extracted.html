@@ -33,9 +33,11 @@
             <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ files_tree }}</code></pre>
         </div>
 
-        <div>
+        <div class="flex flex-col gap-2">
             <p class="font-semibold">Données</p>
-            <pre class="bg-gray-200 p-2 rounded"><code>{{ file_info }}<br>{{ file_mime }}</code></pre>
+            {% if file_mime is not None or file_info is not None %}
+            	<pre class="bg-gray-200 p-2 rounded"><code>{{ file_info }}<br>{{ file_mime }}</code></pre>
+            {% endif %}
             <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ extracted }}</code></pre>
         </div>
     </div>
