@@ -11,12 +11,12 @@
 
         <div class="flex flex-col gap-3">
             <h2 class="text-xl">DNS zone</h2>
-            <pre class="bg-gray-200 p-2 rounded"><code>{{ dns_zone }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ dns_zone }}</code></pre>
         </div>
 
         <div class="flex flex-col gap-3">
             <h2 class="text-xl">Data folder</h2>
-            <pre class="bg-gray-200 p-2 rounded"><code>{{ data_folder_tree }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ data_folder_tree }}</code></pre>
         </div>
     </div>
 {% endblock %}

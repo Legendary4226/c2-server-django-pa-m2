@@ -25,17 +25,18 @@
 
         <div>
             <p class="font-semibold">Chunks manquants</p>
-            <pre class="bg-gray-200 p-2 rounded text-wrap"><code>{{ job.find_missing_chunks }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ job.find_missing_chunks }}</code></pre>
         </div>
 
         <div>
             <p class="font-semibold">Fichiers</p>
-            <pre class="bg-gray-200 p-2 rounded"><code>{{ files_tree }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ files_tree }}</code></pre>
         </div>
 
         <div>
             <p class="font-semibold">Données</p>
-            <pre class="bg-gray-200 p-2 rounded"><code>{{ extracted }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded"><code>{{ file_info }}<br>{{ file_mime }}</code></pre>
+            <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code>{{ extracted }}</code></pre>
         </div>
     </div>
 {% endblock %}
