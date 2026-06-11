@@ -65,8 +65,11 @@ def show_job_extracted(request: HttpRequest, job_id: int):
 
     extracted = 'No file yet'
     if os.path.isfile(job.extracted_file_path()):
-        with open(job.extracted_file_path(), 'r') as f:
-            extracted = f.read()
+        import subprocess
+        with open(job.extracted_file_path(), 'rb') as f:
+            extracted = f.read().decode('utf-8', errors='replace')
+        file_info = subprocess.check_output(['file', job.extracted_file_path()], text=True)
+        file_mime = subprocess.check_output(['file', '-i', job.extracted_file_path()], text=True)
 
     return render(request, "job_extracted.html", {
         "job": job,
