@@ -28,7 +28,7 @@
                     <span class="mdi mdi-laptop"></span>
                     <span class="font-medium">Machines</span>
                 </a>
-                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path == '/jobs' %}bg-surface-container-low text-primary{% endif %}"
+                <a class="px-4 py-3 rounded-xl flex items-center gap-3 transition-all {% if request.path|slice:":5" == '/jobs' or request.path|slice:":5" == '/job/' %}bg-surface-container-low text-primary{% endif %}"
                    href="/jobs">
                     <span class="mdi mdi-cog-play"></span>
                     <span class="font-medium">Jobs</span>
