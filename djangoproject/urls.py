@@ -19,7 +19,7 @@ import re
 
 from decouple import config
 from django.conf import settings
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 # from django.contrib import admin
 from django.urls import include, path
@@ -140,6 +140,22 @@ def debug(request: HttpRequest):
         "dns_zone": dns_zone,
     })
 
+def debug_dns_queries_logs(request: HttpRequest):
+    last_lines = 'Aucun fichier'
+    if config('DNS_LOG_FILE') and os.path.isfile(config('DNS_LOG_FILE')):
+        with open(config('DNS_LOG_FILE')) as f:
+            last_lines = f.readlines()[-200:]
+
+    return HttpResponse(last_lines, content_type="text/plain")
+
+def debug_dns_filtered_logs(request: HttpRequest):
+    last_lines = 'Aucun fichier'
+    if config('LOG_DNS_FILTERED') and os.path.isfile(config('LOG_DNS_FILTERED')):
+        with open(config('LOG_DNS_FILTERED')) as f:
+            last_lines = f.readlines()[-200:]
+
+    return HttpResponse(last_lines, content_type="text/plain")
+
 def file_tree(folder_path: str, prefix="", squash=True) -> str:
     def natural_sort_key(s):
         return [int(c) if c.isdigit() else c.lower() for c in re.split(r'(\d+)', s)]
@@ -203,6 +219,8 @@ urlpatterns = [
     path('machine/delete/<int:machine_id>', machine_delete, name='machine_delete'),
     path('jobs', jobs, name='jobs'),
     path('debug', debug, name='debug'),
+    path('debug/logs_dns_queries', debug_dns_queries_logs, name='debug_logs_dns_queries'),
+    path('debug/logs_dns_filtered', debug_dns_filtered_logs, name='debug_logs_dns_filtered'),
     path('job/create/<int:machine_id>', job_create, name='job_create'),
     path('job/force-finish/<int:job_id>', job_force_finish, name='job_force_finish'),
     path('job/delete/<int:job_id>', job_delete, name='job_delete'),

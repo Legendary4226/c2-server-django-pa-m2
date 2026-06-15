@@ -1,0 +1,38 @@
+<div class="flex flex-col gap-3">
+    <h2 class="text-xl">Logs DNS queries</h2>
+    <p>Dernières 200 lignes</p>
+    <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code class="hold-data-dns-queries-logs"><span class="mdi mdi-loading mdi-spin"></span></code></pre>
+</div>
+
+<div class="flex flex-col gap-3">
+    <h2 class="text-xl">Logs DNS filtrés</h2>
+    <p>Dernières 200 lignes</p>
+    <pre class="bg-gray-200 p-2 rounded break-all whitespace-pre-wrap max-h-80 overflow-auto"><code class="hold-data-dns-filtered-logs"><span class="mdi mdi-loading mdi-spin"></span></code></pre>
+</div>
+
+<script type="application/javascript">
+    const dnsQueriesLogs = document.querySelector('.hold-data-dns-queries-logs')
+    const dnsFilteredLogs = document.querySelector('.hold-data-dns-filtered-logs')
+
+    function isAtBottom(el) {
+        return el.scrollTop + el.clientHeight >= el.scrollHeight - 10
+    }
+
+    async function fetchQueriesLogs() {
+        const pre = dnsQueriesLogs.parentElement
+        const atBottom = isAtBottom(pre)
+        dnsQueriesLogs.textContent = await fetch('/debug/logs_dns_queries').then(r => r.text())
+        if (atBottom) pre.scrollTop = pre.scrollHeight
+        setTimeout(fetchQueriesLogs, 1000 * 5)
+    }
+    async function fetchFilteredLogs() {
+        const pre = dnsFilteredLogs.parentElement
+        const atBottom = isAtBottom(pre)
+        dnsFilteredLogs.textContent = await fetch('/debug/logs_dns_filtered').then(r => r.text())
+        if (atBottom) pre.scrollTop = pre.scrollHeight
+        setTimeout(fetchFilteredLogs, 1000 * 5)
+    }
+
+    fetchQueriesLogs()
+    fetchFilteredLogs()
+</script>
