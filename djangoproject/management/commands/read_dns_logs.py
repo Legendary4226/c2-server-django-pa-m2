@@ -55,6 +55,7 @@ class Command(BaseCommand):
         self.stdout.write('Processing ' + str(len(lines)) + ' lines...')
 
         for line in lines:
+            line = line.lower()
             parsed = self.dnsLogParser.parse_line(line)
             if not parsed:
                 continue
